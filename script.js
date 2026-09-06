@@ -245,7 +245,10 @@
   function updateStatistics() {
     const records = DB.records || [];
     const nsq = records.filter((r) => (r.category || "").toUpperCase() === "NSQ").length;
-    const alerted = records.filter((r) => (r.status || "").toUpperCase() === "ALERT").length;
+  const alerted = records.filter((r) => {
+  const category = (r.category || "").toUpperCase();
+  return category === "NSQ" || category === "SPURIOUS";
+}).length;
     const manufacturers = new Set(records.map((r) => (r.manufacturer || "").trim().toLowerCase())).size;
 
     setText("#stat-total", records.length);
@@ -275,7 +278,11 @@
     grid.innerHTML = sorted
       .map(
         (r) => `
-      <div class="recent-card ${r.category === "Alert" ? "category-alert" : ""}">
+      <div class="recent-card ${<div class="recent-card ${
+  ["NSQ", "SPURIOUS"].includes((r.category || "").toUpperCase())
+    ? "category-alert"
+    : ""
+}"> ? "category-alert" : ""}">
         <span class="recent-tag">${escapeHTML(r.category || "Alert")}</span>
         <h4>${escapeHTML(r.medicineName)}</h4>
         <p class="recent-meta">Batch <span class="batch">${escapeHTML(r.batchNumber)}</span> &middot; ${escapeHTML(r.manufacturer)}</p>
