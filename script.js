@@ -7,7 +7,7 @@
 (() => {
   "use strict";
 
-  const DATA_URL = "data/drugAlerts.json";
+  const DATA_URL = "./drugAlerts.json";
   const HISTORY_KEY = "pharmaShieldSearchHistory";
   const MAX_HISTORY = 8;
 
@@ -390,6 +390,7 @@
   function initNav() {
     const toggle = el("#nav-toggle");
     const nav = el("#main-nav");
+    if (!toggle || !nav) return;
 
     toggle.addEventListener("click", () => {
       const isOpen = nav.classList.toggle("mobile-open");
@@ -422,6 +423,7 @@
 
   function initFeedbackForm() {
     const form = el("#feedback-form");
+    if (!form) return;
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       showToast("Thanks — your feedback was captured for this demo.", "clear");
@@ -431,6 +433,7 @@
 
   function initSearchForm() {
     const form = el("#search-form");
+    if (!form) return;
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       runSearch();
