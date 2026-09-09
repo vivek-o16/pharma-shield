@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prohibited Drugs — Pharma Shield</title>
+  <meta name="description" content="Complete list of drugs prohibited for manufacture and sale under Section 26A of the Drugs & Cosmetics Act, 1940, as published via Gazette Notifications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+  <header class="site-header" id="site-header">
+    <div class="shell header-shell">
+      <a href="index.html#home" class="brand" aria-label="Pharma Shield home">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg>
+        </span>
+        <span>
+          <strong>Pharma Shield</strong>
+          <small>Drug quality alert checker</small>
+        </span>
+      </a>
+
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html#home" data-nav>Home</a>
+        <a href="index.html#check" data-nav>Check Drug</a>
+        <a href="index.html#analytics" data-nav>Analytics</a>
+        <a href="index.html#recent" data-nav>Alerts</a>
+        <a href="index.html#how-it-works" data-nav>How It Works</a>
+        <a href="index.html#about" data-nav>About</a>
+        <a href="prohibited.html" data-nav class="active">Prohibited Drugs</a>
+      </nav>
+
+      <a class="header-cta" href="index.html#check">Check a medicine <span>→</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="prohibited-hero">
+      <div class="shell">
+        <span class="section-kicker">REGULATORY REFERENCE</span>
+        <h1>Prohibited Drugs</h1>
+        <p class="prohibited-sub">List of drugs prohibited for manufacture and sale through Gazette Notifications under Section 26A of the Drugs &amp; Cosmetics Act, 1940, issued by the Ministry of Health &amp; Family Welfare.</p>
+        <div class="prohibited-meta">
+          <span><strong id="prohibited-total">—</strong> entries</span>
+          <span class="dot-sep">•</span>
+          <span>Section 26A, Drugs &amp; Cosmetics Act, 1940</span>
+          <span class="dot-sep">•</span>
+          <span>Source: Gazette Notifications, Ministry of Health &amp; Family Welfare</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="prohibited-section">
+      <div class="shell">
+        <div class="prohibited-toolbar">
+          <div class="input-wrap prohibited-search-wrap">
+            <span class="input-icon">⌕</span>
+            <input type="text" id="prohibited-search" placeholder="Search drug name, notification number, date or details…" autocomplete="off">
+          </div>
+          <span class="prohibited-count" id="prohibited-count">Showing — of — entries</span>
+        </div>
+
+        <div class="prohibited-table-wrap">
+          <table class="prohibited-table">
+            <thead>
+              <tr>
+                <th class="col-sr">Sr. No.</th>
+                <th class="col-drug">Drug / Description</th>
+                <th class="col-notif">Notification No.</th>
+                <th class="col-date">Notification Date</th>
+                <th class="col-details">Details / Conditions</th>
+              </tr>
+            </thead>
+            <tbody id="prohibited-tbody">
+              <tr><td colspan="5" class="prohibited-loading">Loading prohibited-drug records…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <nav class="pagination" id="prohibited-pagination" aria-label="Prohibited drugs pagination"></nav>
+      </div>
+    </section>
+
+    <section class="prohibited-info">
+      <div class="shell prohibited-info-grid">
+        <div class="prohibited-info-card">
+          <span class="section-kicker">ABOUT THIS LIST</span>
+          <p>This table presents the entries contained in the Section 26A prohibited-drug Gazette Notification document supplied with Pharma Shield. Entries are shown exactly as recorded in the source dataset, including any conditions, exceptions or notes attached to a listing.</p>
+        </div>
+        <div class="prohibited-info-card">
+          <span class="section-kicker">SOURCE</span>
+          <p>Ministry of Health &amp; Family Welfare<br>
+          Drugs &amp; Cosmetics Act, 1940 — Section 26A<br>
+          Gazette Notification list provided with Pharma Shield</p>
+        </div>
+      </div>
+      <div class="shell" id="prohibited-notes-wrap" hidden>
+        <div class="prohibited-notes-card">
+          <span class="section-kicker">NOTES FROM THE SOURCE DOCUMENT</span>
+          <ul id="prohibited-notes-list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-shell">
+      <div class="footer-brand">
+        <span class="brand-icon small"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span>
+        <strong>Pharma Shield</strong>
+      </div>
+      <p>College Innovation Practical · Educational use · Not affiliated with CDSCO<br>
+      Data Source: CDSCO · Purpose: Educational / Informational · Package scanning uses the open-source Tesseract.js OCR library, loaded only when you use the scanner.</p>
+    </div>
+  </footer>
+
+  <script src="prohibited.js"></script>
+</body>
+</html>
