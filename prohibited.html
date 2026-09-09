@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharma Shield — Prohibited Drugs</title>
+  <meta name="description" content="Prohibited drugs listed through Gazette Notifications under Section 26A of the Drugs & Cosmetics Act, 1940.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .prohibited-hero{background:linear-gradient(135deg,#071a2e,#0d2a46);color:#fff;padding:64px 0 52px;border-bottom:1px solid #dfe7ee}
+    .prohibited-hero h1{color:#fff;margin-bottom:14px}
+    .prohibited-hero p{color:#b9cad8;max-width:800px;margin-bottom:0}
+    .prohibited-wrap{padding:42px 0 78px}
+    .prohibited-note{background:#fff0f2;border:1px solid #f1b9c1;border-radius:16px;padding:17px 20px;margin-bottom:22px}
+    .prohibited-note strong{color:#b32237;display:block;margin-bottom:4px}
+    .prohibited-note span{color:#6f4b52;font-size:.82rem}
+    .prohibited-panel{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+    .prohibited-head{padding:24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;align-items:end}
+    .prohibited-head h2{margin:0;font-size:1.55rem}
+    .prohibited-head p{margin:5px 0 0;font-size:.78rem}
+    .prohibited-search{padding:18px 24px;border-bottom:1px solid var(--line);background:#fbfdfe}
+    .prohibited-search .input-wrap{max-width:720px;background:#fff}
+    .prohibited-table-wrap{overflow-x:auto}
+    .prohibited-table{width:100%;border-collapse:collapse;min-width:920px}
+    .prohibited-table th,.prohibited-table td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+    .prohibited-table th{background:#f5f8fa;color:#536579;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+    .prohibited-table td{font-size:.78rem;color:var(--ink)}
+    .prohibited-table tbody tr:nth-child(even){background:#fcfdfd}
+    .prohibited-table td:first-child{font-family:ui-monospace,monospace;font-weight:800;color:var(--navy);width:80px}
+    .prohibited-table td:nth-child(2){font-weight:700;min-width:300px}
+    .prohibited-table td:nth-child(3){min-width:190px}
+    .prohibited-table td:nth-child(4){min-width:130px;white-space:nowrap}
+    .prohibited-empty{text-align:center!important;color:var(--muted)!important;padding:35px!important}
+    .prohibited-footer{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .prohibited-count{font-size:.75rem;color:var(--muted)}
+    .pagination{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .page-btn{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:8px;min-width:36px;height:36px;padding:0 9px;cursor:pointer;font-weight:700}
+    .page-btn:hover,.page-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .page-btn:disabled{opacity:.45;cursor:not-allowed}
+    .prohibited-back{display:inline-flex;margin-top:24px;color:var(--teal2);font-weight:800;text-decoration:none;font-size:.8rem}
+    @media(max-width:700px){.prohibited-hero{padding:48px 0 40px}.prohibited-head{align-items:start;flex-direction:column}.prohibited-footer{padding:16px}.prohibited-search{padding:16px}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-shell">
+      <a href="index.html" class="brand" aria-label="Pharma Shield home">
+        <span class="brand-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span>
+        <span><strong>Pharma Shield</strong><small>Drug quality alert checker</small></span>
+      </a>
+      <nav class="main-nav" id="main-nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#check">Check Drug</a>
+        <a href="index.html#recent">Alerts</a>
+        <a href="index.html#how-it-works">How It Works</a>
+        <a href="index.html#about">About</a>
+        <a href="prohibited.html" class="active">Prohibited Drugs</a>
+      </nav>
+      <a class="header-cta" href="index.html#check">Check a medicine <span>→</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="prohibited-hero">
+      <div class="shell">
+        <span class="section-kicker" style="color:#50d7c6">REGULATORY REFERENCE</span>
+        <h1>Prohibited Drugs</h1>
+        <p>List of drugs prohibited for manufacture and sale through Gazette Notifications under Section 26A of the Drugs &amp; Cosmetics Act, 1940 by the Ministry of Health and Family Welfare.</p>
+      </div>
+    </section>
+
+    <section class="prohibited-wrap">
+      <div class="shell">
+        <div class="prohibited-note">
+          <strong>Important Note</strong>
+          <span>This list is taken from the provided Section 26A notification document. Presence in this list means the drug/formulation appears in the provided notification document; it is not a substitute for checking the latest official regulatory notification.</span>
+        </div>
+
+        <section class="prohibited-panel">
+          <div class="prohibited-head">
+            <div>
+              <span class="section-kicker">SECTION 26A</span>
+              <h2>Complete List of Prohibited Drugs</h2>
+              <p>Showing entries from the provided notification document.</p>
+            </div>
+          </div>
+
+          <div class="prohibited-search">
+            <div class="input-wrap">
+              <span class="input-icon">⌕</span>
+              <input id="prohibited-search" type="search" placeholder="Search drug name, notification, date or details..." autocomplete="off">
+            </div>
+          </div>
+
+          <div class="prohibited-table-wrap">
+            <table class="prohibited-table">
+              <thead><tr><th>Sr. No.</th><th>Drug / Description</th><th>Notification No.</th><th>Notification Date</th><th>Details / Conditions</th></tr></thead>
+              <tbody id="prohibited-body"><tr><td colspan="5" class="prohibited-empty">Loading prohibited drugs...</td></tr></tbody>
+            </table>
+          </div>
+
+          <div class="prohibited-footer">
+            <span class="prohibited-count" id="prohibited-count">Loading...</span>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </section>
+        <a class="prohibited-back" href="index.html">← Back to Drug Alert Checker</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="shell footer-shell"><div class="footer-brand"><span class="brand-icon small"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span><strong>Pharma Shield</strong></div><p>College Innovation Practical · Educational use · Not affiliated with CDSCO</p></div></footer>
+
+  <script>
+    (() => {
+      const DATA_URL = './bannedDrugs.json';
+      const PAGE_SIZE = 15;
+      let entries = [];
+      let filtered = [];
+      let page = 1;
+
+      const $ = (s) => document.querySelector(s);
+      const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const text = (v) => String(v ?? '').trim();
+
+      function matches(e, q) {
+        if (!q) return true;
+        const haystack = [e.drugName, e.notification, ...(e.notificationDates || []), e.details].map(text).join(' ').toLowerCase();
+        return haystack.includes(q.toLowerCase());
+      }
+
+      function render() {
+        const start = (page - 1) * PAGE_SIZE;
+        const rows = filtered.slice(start, start + PAGE_SIZE);
+        const body = $('#prohibited-body');
+        body.innerHTML = rows.length ? rows.map(e => `
+          <tr>
+            <td>${esc(e.srNo)}</td>
+            <td>${esc(e.drugName || '—')}</td>
+            <td>${esc(e.notification || '—')}</td>
+            <td>${esc((e.notificationDates || []).join(', ') || '—')}</td>
+            <td>${esc(e.details || '—')}</td>
+          </tr>`).join('') : '<tr><td colspan="5" class="prohibited-empty">No matching prohibited drug found.</td></tr>';
+
+        const end = Math.min(start + PAGE_SIZE, filtered.length);
+        $('#prohibited-count').textContent = filtered.length ? `Showing ${start + 1} to ${end} of ${filtered.length} entries` : 'Showing 0 of 0 entries';
+        renderPagination();
+      }
+
+      function renderPagination() {
+        const total = Math.ceil(filtered.length / PAGE_SIZE);
+        const wrap = $('#pagination');
+        if (total <= 1) { wrap.innerHTML = ''; return; }
+        const pages = [];
+        const add = n => { if (!pages.includes(n)) pages.push(n); };
+        add(1); add(total);
+        for (let n = page - 2; n <= page + 2; n++) if (n > 1 && n < total) add(n);
+        pages.sort((a,b)=>a-b);
+        let html = `<button class="page-btn" ${page === 1 ? 'disabled' : ''} data-page="${page-1}">←</button>`;
+        let prev = 0;
+        pages.forEach(n => { if (prev && n - prev > 1) html += '<span>…</span>'; html += `<button class="page-btn ${n === page ? 'active' : ''}" data-page="${n}">${n}</button>`; prev = n; });
+        html += `<button class="page-btn" ${page === total ? 'disabled' : ''} data-page="${page+1}">→</button>`;
+        wrap.innerHTML = html;
+        wrap.querySelectorAll('[data-page]').forEach(btn => btn.addEventListener('click', () => { const n = Number(btn.dataset.page); if (n >= 1 && n <= total) { page = n; render(); window.scrollTo({top: document.querySelector('.prohibited-panel').offsetTop - 95, behavior:'smooth'}); }}));
+      }
+
+      async function init() {
+        try {
+          const res = await fetch(DATA_URL, {cache:'no-store'});
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const json = await res.json();
+          entries = Array.isArray(json.entries) ? json.entries : [];
+          filtered = entries.slice();
+          render();
+        } catch (err) {
+          console.error(err);
+          $('#prohibited-body').innerHTML = '<tr><td colspan="5" class="prohibited-empty">Could not load the prohibited-drug dataset. Please refresh the page.</td></tr>';
+          $('#prohibited-count').textContent = 'Dataset unavailable';
+        }
+      }
+
+      $('#prohibited-search').addEventListener('input', e => {
+        const q = text(e.target.value);
+        filtered = entries.filter(x => matches(x, q));
+        page = 1;
+        render();
+      });
+      init();
+    })();
+  </script>
+</body>
+</html>
