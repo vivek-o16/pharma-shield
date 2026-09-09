@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prohibited Drugs | Pharma Shield</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .prohibited-page{max-width:1250px;margin:0 auto;padding:42px 22px 70px}.prohibited-hero{padding:34px;border:1px solid var(--border-color,#e5e7eb);border-radius:24px;background:linear-gradient(135deg,#f8fafc,#eef6ff);margin-bottom:24px}.prohibited-kicker{font-size:.78rem;font-weight:800;letter-spacing:.12em;color:#2563eb}.prohibited-hero h1{margin:8px 0 10px;font-size:clamp(2rem,4vw,3rem)}.prohibited-hero p{max-width:850px;color:#64748b;line-height:1.65;margin:0}.prohibited-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}.prohibited-meta span{padding:9px 13px;border-radius:999px;background:#fff;border:1px solid #dbe3ee;font-size:.85rem;font-weight:700}.prohibited-toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:20px 0}.prohibited-search{flex:1;min-width:280px;position:relative}.prohibited-search input{width:100%;box-sizing:border-box;padding:15px 18px 15px 46px;border:1px solid #d8e0ea;border-radius:14px;background:#fff;font-size:1rem;outline:none}.prohibited-search input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.10)}.prohibited-search span{position:absolute;left:17px;top:50%;transform:translateY(-50%);color:#64748b}.prohibited-count{font-size:.9rem;color:#64748b;font-weight:700}.prohibited-card{background:#fff;border:1px solid #e2e8f0;border-radius:20px;overflow:hidden;box-shadow:0 10px 35px rgba(15,23,42,.06)}.prohibited-table-wrap{overflow:auto}.prohibited-table{width:100%;min-width:1050px;border-collapse:collapse}.prohibited-table th{background:#f8fafc;color:#334155;text-align:left;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;padding:15px 16px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:1}.prohibited-table td{padding:17px 16px;border-bottom:1px solid #eef2f7;vertical-align:top;color:#334155;line-height:1.55}.prohibited-table tr:hover td{background:#f8fbff}.prohibited-table .sr{font-weight:800;color:#2563eb;width:65px}.prohibited-table .drug{font-weight:800;color:#0f172a;min-width:270px}.prohibited-table .notification{font-weight:700;min-width:190px}.prohibited-table .date{white-space:nowrap;min-width:130px}.prohibited-table .details{min-width:330px}.prohibited-empty{padding:45px!important;text-align:center;color:#64748b}.prohibited-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 18px;background:#fafcff;flex-wrap:wrap}.prohibited-pagination{display:flex;gap:6px;flex-wrap:wrap}.prohibited-pagination button{border:1px solid #d8e0ea;background:#fff;padding:8px 11px;border-radius:9px;cursor:pointer;font-weight:700}.prohibited-pagination button.active{background:#2563eb;color:#fff;border-color:#2563eb}.prohibited-pagination button:disabled{opacity:.45;cursor:not-allowed}.prohibited-note{margin-top:22px;padding:20px 22px;border:1px solid #e2e8f0;border-radius:18px;background:#f8fafc;color:#475569;line-height:1.65}.back-link{display:inline-flex;margin-bottom:18px;text-decoration:none;font-weight:800;color:#2563eb}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-container">
+      <a class="logo" href="index.html">Pharma <span>Shield</span></a>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="index.html#check">Check Drug</a>
+        <a href="index.html#alerts">Alerts</a>
+        <a href="prohibited.html" class="active">Prohibited Drugs</a>
+        <a href="index.html#how-it-works">How It Works</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="prohibited-page">
+    <a class="back-link" href="index.html">← Back to Pharma Shield</a>
+    <section class="prohibited-hero">
+      <div class="prohibited-kicker">REGULATORY REFERENCE • SECTION 26A</div>
+      <h1>Prohibited Drugs</h1>
+      <p>Complete reference list of drugs prohibited for manufacture and sale through Gazette Notifications under Section 26A of the Drugs &amp; Cosmetics Act, 1940, based on the provided source document.</p>
+      <div class="prohibited-meta">
+        <span id="totalEntries">444 Entries</span><span>Section 26A</span><span>Ministry of Health &amp; Family Welfare</span><span>Gazette Notifications</span>
+      </div>
+    </section>
+
+    <div class="prohibited-toolbar">
+      <div class="prohibited-search"><span>⌕</span><input id="prohibitedSearch" type="search" placeholder="Search drug name, notification, date or details..." autocomplete="off"></div>
+      <div class="prohibited-count" id="resultCount">Loading list…</div>
+    </div>
+
+    <section class="prohibited-card">
+      <div class="prohibited-table-wrap">
+        <table class="prohibited-table">
+          <thead><tr><th>Sr. No.</th><th>Drug / Description</th><th>Notification No.</th><th>Notification Date</th><th>Details / Conditions</th></tr></thead>
+          <tbody id="prohibitedBody"><tr><td colspan="5" class="prohibited-empty">Loading prohibited-drug list…</td></tr></tbody>
+        </table>
+      </div>
+      <div class="prohibited-footer"><span id="pageInfo">—</span><div class="prohibited-pagination" id="pagination"></div></div>
+    </section>
+
+    <div class="prohibited-note"><strong>Source:</strong> LIST OF DRUGS PROHIBITED FOR MANUFACTURE AND SALE THROUGH GAZETTE NOTIFICATIONS UNDER SECTION 26A OF DRUGS &amp; COSMETICS ACT 1940 BY THE MINISTRY OF HEALTH AND FAMILY WELFARE. The list is presented as a reference from the provided source document; notification conditions and legal status should be checked against the applicable Gazette notification.</div>
+  </main>
+
+  <script>
+  const DATA_URL='./bannedDrugs.json';
+  let entries=[]; let filtered=[]; let page=1; const PAGE_SIZE=15;
+  const body=document.getElementById('prohibitedBody'), search=document.getElementById('prohibitedSearch');
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function render(){
+    const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE)); if(page>totalPages) page=totalPages;
+    const start=(page-1)*PAGE_SIZE; const rows=filtered.slice(start,start+PAGE_SIZE);
+    body.innerHTML=rows.length?rows.map(e=>`<tr><td class="sr">${esc(e.srNo)}</td><td class="drug">${esc(e.drugName)}</td><td class="notification">${esc(e.notification||'Not specified')}</td><td class="date">${esc((e.notificationDates||[]).join(', ')||'Not specified')}</td><td class="details">${esc(e.details||'Not specified')}</td></tr>`).join(''):`<tr><td colspan="5" class="prohibited-empty">No matching prohibited drug found.</td></tr>`;
+    document.getElementById('resultCount').textContent=`${filtered.length} matching ${filtered.length===1?'entry':'entries'}`;
+    document.getElementById('pageInfo').textContent=`Showing ${filtered.length?start+1:0}–${Math.min(start+PAGE_SIZE,filtered.length)} of ${filtered.length}`;
+    const pg=document.getElementById('pagination'); pg.innerHTML='';
+    const prev=document.createElement('button'); prev.textContent='Previous'; prev.disabled=page===1; prev.onclick=()=>{page--;render()}; pg.appendChild(prev);
+    let from=Math.max(1,page-2), to=Math.min(totalPages,from+4); from=Math.max(1,to-4);
+    for(let i=from;i<=to;i++){const b=document.createElement('button');b.textContent=i;b.className=i===page?'active':'';b.onclick=()=>{page=i;render()};pg.appendChild(b)}
+    const next=document.createElement('button'); next.textContent='Next'; next.disabled=page===totalPages; next.onclick=()=>{page++;render()}; pg.appendChild(next);
+  }
+  search.addEventListener('input',()=>{const q=search.value.trim().toLowerCase();filtered=entries.filter(e=>[e.drugName,e.notification,e.details,(e.notificationDates||[]).join(' ')].join(' ').toLowerCase().includes(q));page=1;render()});
+  fetch(DATA_URL,{cache:'no-store'}).then(r=>r.json()).then(data=>{entries=data.entries||[];filtered=entries;document.getElementById('totalEntries').textContent=`${entries.length} Entries`;render()}).catch(()=>{body.innerHTML='<tr><td colspan="5" class="prohibited-empty">Unable to load the prohibited-drug list. Make sure bannedDrugs.json is in the repository root.</td></tr>';document.getElementById('resultCount').textContent='Unable to load list';});
+  </script>
+</body>
+</html>
