@@ -55,110 +55,66 @@ h1{font-size:clamp(3rem,5.5vw,5.3rem);line-height:.98;letter-spacing:-.065em;mar
 @media(max-width:700px){.shell{width:min(100% - 28px,1160px)}.header-shell{height:68px}.hero{padding:55px 0}.hero-shell{gap:35px}h1{font-size:3.15rem}.search-card{grid-template-columns:1fr}.btn-check{width:100%}.scan-stage{height:310px}.visual-card{transform:none}.stats-grid,.recent-grid,.steps,.about-grid,.feedback-shell{grid-template-columns:1fr}.stats-grid{gap:9px}.stat-card{min-height:115px}.section-head{align-items:start;flex-direction:column}.recent-section,.how-section,.about-section,.feedback-section,.disclaimer-section{padding:58px 0}.feedback-shell{padding:25px}.disclaimer-card{grid-template-columns:1fr}.main-nav.mobile-open{display:flex;position:absolute;left:0;right:0;top:68px;background:#fff;padding:10px 20px 18px;flex-direction:column;border-bottom:1px solid var(--line);box-shadow:var(--shadow)}.main-nav.mobile-open a{padding:11px 0;border-bottom:1px solid var(--line)}}
 @media print{.site-header,.hero,.stats-section,.recent-section,.how-section,.about-section,.feedback-section,.disclaimer-section,.site-footer,.result-actions,.toast-region{display:none!important}.result-card{box-shadow:none}}
 
-/* ============ ADDITIONS: badges, scanner, analytics, innovation, why-section ============ */
-.status-badge--neutral{background:#8a97a5!important}
-.result-card.status-neutral{background:#f1f4f7;border-color:var(--line)}
-.dot--NSQ{background:var(--red)}.dot--ALERTED{background:var(--amber)}
-.result-field .dim{color:#8a97a5;font-weight:500;font-size:.72rem}
-.recent-card--alerted:before{background:var(--amber)}.recent-tag--alerted{color:var(--amber);background:var(--amberbg)}
-.recent-card--nsq:before{background:var(--red)}.recent-tag--nsq{color:var(--red);background:var(--redbg)}
+/* =========================================================
+   Pharma Shield — systematic result row
+   ========================================================= */
+.result-grid-scroll{overflow-x:auto;overflow-y:hidden;margin:18px 0 0;padding:17px 0 4px;border-top:1px solid rgba(16,36,58,.1);-webkit-overflow-scrolling:touch}
+.result-grid-scroll .result-grid{display:grid;grid-template-columns:repeat(11,minmax(145px,1fr));gap:0;margin:0;padding:0;border:0;min-width:1650px}
+.result-grid-scroll .result-field{padding:0 14px;border-right:1px solid rgba(16,36,58,.09);min-width:0}
+.result-grid-scroll .result-field:first-child{padding-left:0}
+.result-grid-scroll .result-field:last-child{border-right:0}
+.result-grid-scroll .result-field dt{white-space:nowrap}
+.result-grid-scroll .result-field dd{font-size:.82rem;line-height:1.45;overflow-wrap:anywhere;word-break:break-word}
 
-/* Nav suggestion dropdown */
-.search-field{position:relative}
-.suggestion-list{list-style:none;margin:0;padding:6px;position:absolute;left:0;right:0;top:calc(100% + 6px);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);z-index:40;max-height:230px;overflow:auto}
-.suggestion-list[hidden]{display:none}
-.suggestion-list li{padding:9px 10px;border-radius:8px;font-size:.85rem;cursor:pointer;color:var(--ink)}
-.suggestion-list li:hover{background:var(--mint);color:var(--teal2)}
+/* =========================================================
+   Prohibited Drugs reference section
+   ========================================================= */
+.prohibited-section{padding:82px 0;background:#fff;border-top:1px solid var(--line)}
+.prohibited-sub{max-width:780px;margin-bottom:0}
+.prohibited-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:28px}
+.prohibited-summary-card{min-height:128px;background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px;box-shadow:0 8px 28px rgba(7,26,46,.055);display:flex;flex-direction:column;justify-content:space-between;gap:8px}
+.prohibited-summary-card.featured{border-color:#bfeee7;background:linear-gradient(145deg,#f4fffd,#fff)}
+.prohibited-summary-card strong{font-size:1.05rem;color:var(--navy);line-height:1.2}
+.prohibited-summary-card>span:last-child{font-size:.7rem;color:var(--muted)}
+.prohibited-icon{width:34px;height:34px;border-radius:10px;background:#eaf6ff;color:#1769aa;display:grid;place-items:center;font-weight:900}
+.prohibited-icon.legal{background:#eaf9f2;color:var(--green)}
+.prohibited-icon.authority{background:#f2edff;color:#7651c7}
+.prohibited-icon.source{background:#fff0f2;color:var(--red)}
+.prohibited-table-card{margin-top:26px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.prohibited-table-head{padding:24px 24px 18px;display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--line)}
+.prohibited-table-head h3{margin:0 0 5px;font-size:1.35rem;color:var(--navy)}
+.prohibited-table-head p{margin:0;font-size:.78rem}
+.prohibited-table-wrap{overflow-x:auto}
+.prohibited-table{width:100%;border-collapse:separate;border-spacing:0;min-width:980px;font-size:.78rem}
+.prohibited-table th{background:#f1f5f8;color:#4d6074;text-align:left;text-transform:uppercase;letter-spacing:.05em;font-size:.62rem;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.prohibited-table td{padding:12px 14px;border-bottom:1px solid #e8eef3;color:var(--ink);vertical-align:top;line-height:1.45}
+.prohibited-table tbody tr:nth-child(even){background:#fbfdfe}
+.prohibited-table tbody tr:hover{background:#f3fbf9}
+.prohibited-table td:first-child{font-family:ui-monospace,monospace;font-weight:800;color:var(--navy);width:72px}
+.prohibited-table td:nth-child(2){min-width:380px;font-weight:600}
+.prohibited-table td:nth-child(3){min-width:190px}
+.prohibited-table td:nth-child(4){min-width:130px;white-space:nowrap}
+.prohibited-table td:nth-child(5){min-width:300px;color:#5d6f81}
+.prohibited-loading{text-align:center!important;color:var(--muted)!important;padding:35px!important}
+.prohibited-table-footer{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 20px}
+.prohibited-table-footer>span{font-size:.72rem;color:var(--muted);font-weight:600}
+.prohibited-pagination{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.prohibited-pagination button{border:1px solid var(--line);background:#fff;color:var(--navy);min-width:34px;height:34px;padding:0 9px;border-radius:9px;cursor:pointer;font:700 .72rem var(--body)}
+.prohibited-pagination button:hover{border-color:var(--teal);color:var(--teal2)}
+.prohibited-pagination button.active{background:var(--teal2);border-color:var(--teal2);color:#fff}
+.prohibited-pagination button:disabled{opacity:.45;cursor:not-allowed}
+.prohibited-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.prohibited-info-card{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:20px;border:1px solid var(--line);border-radius:17px}
+.prohibited-info-card.mint{background:#edfafa;border-color:#cbeee9}
+.prohibited-info-card.blue{background:#f1f7ff;border-color:#d5e6f7}
+.prohibited-info-icon{width:36px;height:36px;border-radius:10px;background:#d7f4ef;color:var(--teal2);display:grid;place-items:center;font-weight:900}
+.prohibited-info-card.blue .prohibited-info-icon{background:#deebff;color:#3371bb}
+.prohibited-info-card h3{font-size:1rem;margin:0 0 5px}
+.prohibited-info-card p{font-size:.76rem;margin:0}
 
-/* Scan Medicine button + panel */
-.scan-cta{display:flex;align-items:center;gap:10px;margin-top:16px}
-.btn-scan{background:#fff;border:1.5px dashed #9fd6cc;color:var(--teal2)}
-.btn-scan:hover{background:var(--mint)}
-.scan-panel{margin-top:20px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
-.scan-panel[hidden]{display:none}
-.scan-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.scan-panel-head h3{margin:0;font-size:1.05rem}
-.scan-close{border:0;background:none;font-size:1.3rem;line-height:1;cursor:pointer;color:#8a97a5;padding:4px 8px}
-.scan-dropzone{border:2px dashed #cbdce4;border-radius:16px;padding:26px;text-align:center;cursor:pointer;background:#fbfdfe;color:#647487}
-.scan-dropzone:hover,.scan-dropzone:focus-visible{border-color:var(--teal);background:var(--mint)}
-.scan-dropzone strong{display:block;color:var(--navy);margin-bottom:4px}
-.scan-dropzone small{display:block;margin-top:6px;color:#93a2b1}
-.scan-preview{margin-top:16px}
-.scan-preview[hidden]{display:none}
-.scan-preview img{max-width:100%;max-height:260px;border-radius:12px;border:1px solid var(--line);display:block;margin:0 auto}
-.scan-status{margin-top:14px;padding:10px 13px;border-radius:10px;font-size:.82rem;font-weight:600}
-.scan-status[hidden]{display:none}
-.scan-status--busy{background:var(--mint);color:var(--teal2)}
-.scan-status--error{background:var(--redbg);color:var(--red)}
-.scan-verify{margin-top:16px;border-top:1px solid var(--line);padding-top:16px}
-.scan-verify[hidden]{display:none}
-.scan-verify label{display:block;font-size:.68rem;font-weight:800;color:#54677b;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px}
-.scan-verify input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:500 .88rem var(--body);background:#fbfdfe;outline:0}
-.scan-verify input:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(24,182,162,.1)}
-.scan-confidence{font-size:.76rem;margin:10px 0 4px;padding:8px 10px;border-radius:8px}
-.scan-confidence--ok{background:var(--greenbg);color:var(--green)}
-.scan-confidence--low{background:var(--amberbg);color:var(--amber)}
-.scan-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+@media(max-width:950px){.prohibited-summary-grid{grid-template-columns:repeat(2,1fr)}.prohibited-info-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.prohibited-section{padding:58px 0}.prohibited-summary-grid{grid-template-columns:1fr}.prohibited-table-head{padding:20px}.prohibited-table-footer{align-items:flex-start;flex-direction:column}.prohibited-pagination{justify-content:flex-start}.result-grid-scroll .result-grid{min-width:1650px}}
+@media print{.prohibited-section{display:none!important}}
 
-/* Analytics dashboard */
-.analytics-section{padding:0 0 78px;background:var(--navy)}
-.analytics-grid{display:grid;grid-template-columns:1.3fr .9fr;gap:16px;margin-top:26px}
-.analytics-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:20px}
-.analytics-card h4{color:#fff;margin:0 0 14px;font-size:.92rem;font-family:var(--display)}
-.analytics-empty{color:#9bb0c2;font-size:.8rem}
-.year-chart{display:flex;align-items:flex-end;gap:8px;height:170px;padding-top:10px}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
-.bar-track{width:100%;max-width:34px;height:120px;display:flex;align-items:flex-end;background:rgba(255,255,255,.06);border-radius:6px 6px 0 0;overflow:hidden}
-.bar-fill{width:100%;background:linear-gradient(180deg,#48d6c5,var(--teal2));border-radius:6px 6px 0 0;transition:height .4s ease}
-.bar-count{font-size:.62rem;color:#cfe3ee;margin-top:6px;font-weight:700}
-.bar-label{font-size:.6rem;color:#7e9bb5;margin-top:1px}
-.split-bar{display:flex;width:100%;height:16px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08)}
-.split-seg--nsq{background:#ff6b7e}.split-seg--alerted{background:#ffcf6e}
-.split-legend{display:flex;flex-direction:column;gap:8px;margin-top:14px;font-size:.76rem;color:#cfe3ee}
-.split-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
-.dot--nsq{background:#ff6b7e}.dot--alerted{background:#ffcf6e}
-.rank-row{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:2px 10px;margin-bottom:12px}
-.rank-label{font-size:.75rem;color:#dbe9f2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rank-count{font-size:.72rem;color:#9bb0c2;text-align:right}
-.rank-track{grid-column:1/-1;height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-.rank-fill{height:100%;background:linear-gradient(90deg,#48d6c5,var(--teal2));border-radius:999px}
-
-/* Historical database strip */
-.historical-strip{margin-top:26px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.historical-strip .stat-card{min-height:110px}
-.historical-note{margin-top:14px;color:#9bb0c2;font-size:.78rem}
-
-/* Why Pharma Shield */
-.why-section{padding:78px 0;background:#fff}
-.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
-.why-card{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:24px}
-.why-card h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal2);margin-bottom:10px}
-.why-card p{font-size:.88rem;margin:0}
-
-/* Innovation cards */
-.innovation-section{padding:78px 0;background:#edf8f6}
-.innovation-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:30px}
-.innovation-card{background:#fff;border:1px solid #cfe7e3;border-radius:18px;padding:20px}
-.innovation-card span{display:block;font:800 .78rem ui-monospace,monospace;color:#9fd6cc;margin-bottom:12px}
-.innovation-card h4{font-size:.95rem;margin-bottom:6px}
-.innovation-card p{font-size:.8rem;margin:0}
-
-/* 4-step how-it-works connector */
-.steps.steps-4{grid-template-columns:repeat(4,1fr)}
-.steps.steps-4 .step:not(:last-child):after{content:"→";position:absolute;right:-20px;top:50%;transform:translateY(-50%);color:#c9d3dc;font-weight:800;font-size:1.1rem}
-
-@media(max-width:950px){
-  .analytics-grid{grid-template-columns:1fr}
-  .historical-strip{grid-template-columns:repeat(2,1fr)}
-  .why-grid{grid-template-columns:1fr}
-  .innovation-grid{grid-template-columns:repeat(2,1fr)}
-  .steps.steps-4{grid-template-columns:repeat(2,1fr)}
-  .steps.steps-4 .step:after{display:none}
-}
-@media(max-width:700px){
-  .historical-strip{grid-template-columns:1fr 1fr}
-  .innovation-grid{grid-template-columns:1fr}
-  .steps.steps-4{grid-template-columns:1fr}
-  .scan-actions{flex-direction:column}
-  .scan-actions .btn{width:100%}
-}
+.result-badge-prohibited{background:#6b3fb5;margin-left:6px}
+.prohibited-page-gap{color:#8492a1;padding:0 2px;font-size:.8rem}
