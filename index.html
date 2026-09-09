@@ -95,45 +95,6 @@
             </button>
           </form>
 
-          <div class="report-filter-card" id="report-filter-card">
-            <div class="report-filter-head">
-              <div>
-                <span class="report-filter-kicker">REPORT HISTORY</span>
-                <h3>Check reports by month &amp; year</h3>
-              </div>
-              <span class="report-filter-note">Search CDSCO alert records by reporting period.</span>
-            </div>
-            <div class="report-filter-controls">
-              <div class="report-filter-field">
-                <label for="report-month">Month</label>
-                <select id="report-month">
-                  <option value="">Select month</option>
-                  <option value="January">January</option>
-                  <option value="February">February</option>
-                  <option value="March">March</option>
-                  <option value="April">April</option>
-                  <option value="May">May</option>
-                  <option value="June">June</option>
-                  <option value="July">July</option>
-                  <option value="August">August</option>
-                  <option value="September">September</option>
-                  <option value="October">October</option>
-                  <option value="November">November</option>
-                  <option value="December">December</option>
-                </select>
-              </div>
-              <div class="report-filter-field">
-                <label for="report-year">Year</label>
-                <select id="report-year">
-                  <option value="">Select year</option>
-                </select>
-              </div>
-              <button type="button" class="btn btn-primary" id="report-filter-btn">Filter reports</button>
-              <button type="button" class="btn btn-outline" id="report-filter-clear">Clear filter</button>
-            </div>
-            <p class="report-filter-status" id="report-filter-status" aria-live="polite"></p>
-          </div>
-
           <div class="scan-cta">
             <button type="button" class="btn btn-scan" id="scan-open-btn">📷 Scan medicine package</button>
             <span class="hero-note" style="margin:0">Upload or photograph a strip/box to auto-fill the search.</span>
@@ -175,6 +136,33 @@
             <span class="history-strip-label">Recent searches</span>
             <div class="history-pills" id="history-pills"></div>
             <button class="history-clear" id="history-clear" type="button">Clear</button>
+          </div>
+
+          <div class="alert-filter-card" id="alert-filter-card">
+            <div class="alert-filter-head">
+              <div>
+                <span class="filter-kicker">REPORT HISTORY</span>
+                <h3>Check reports by month &amp; year</h3>
+                <p>See all CDSCO quality-alert reports recorded for a selected month and year.</p>
+              </div>
+            </div>
+            <div class="alert-filter-controls">
+              <div class="search-field filter-field">
+                <label for="alert-month">Month</label>
+                <select id="alert-month">
+                  <option value="">Select month</option>
+                </select>
+              </div>
+              <div class="search-field filter-field">
+                <label for="alert-year">Year</label>
+                <select id="alert-year">
+                  <option value="">Select year</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-primary" id="alert-filter-btn">Filter Reports</button>
+              <button type="button" class="btn btn-outline" id="alert-filter-clear">Clear Filter</button>
+            </div>
+            <p class="alert-filter-status" id="alert-filter-status" aria-live="polite"></p>
           </div>
 
           <div class="hero-note">

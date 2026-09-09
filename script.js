@@ -129,75 +129,7 @@
     renderRecentAlerts();
     renderAnalytics();
     renderHistoricalDatabase();
-  }
-
-  function initReportFilter() {
-    const monthSelect = el("#report-month");
-    const yearSelect = el("#report-year");
-    const filterBtn = el("#report-filter-btn");
-    const clearBtn = el("#report-filter-clear");
-    const status = el("#report-filter-status");
-
-    if (!monthSelect || !yearSelect || !filterBtn || !clearBtn) return;
-
-    const years = [...new Set((DB.records || [])
-      .map((record) => Number(record.alertYear))
-      .filter((year) => Number.isFinite(year) && year > 0))]
-      .sort((a, b) => a - b);
-
-    yearSelect.innerHTML = '<option value="">Select year</option>' +
-      years.map((year) => `<option value="${year}">${year}</option>`).join("");
-
-    filterBtn.addEventListener("click", () => {
-      const month = monthSelect.value;
-      const year = yearSelect.value;
-
-      if (!month || !year) {
-        status.textContent = "Select both a month and year to filter the reports.";
-        showToast("Please select both month and year.", "history");
-        return;
-      }
-
-      const matches = (DB.records || []).filter((record) =>
-        String(record.alertMonth || "").trim().toLowerCase() === month.toLowerCase() &&
-        String(record.alertYear || "").trim() === year
-      );
-
-      const container = el("#result-container");
-      if (!container) return;
-
-      if (!matches.length) {
-        container.innerHTML = `
-          <article class="result-card status-clear">
-            <span class="result-badge">🟢 NO REPORTS FOUND</span>
-            <p class="result-message">No CDSCO quality-alert reports were found for ${escapeHTML(month)} ${escapeHTML(year)}.</p>
-            <p class="result-note">The selected month and year do not have a matching record in the Pharma Shield dataset.</p>
-          </article>`;
-        status.textContent = `No reports found for ${month} ${year}.`;
-      } else {
-        container.innerHTML = renderPartialMatch(
-          matches,
-          "",
-          `Reports for ${month} ${year}`,
-          `${matches.length} CDSCO quality-alert report${matches.length === 1 ? "" : "s"} found for ${month} ${year}.`
-        );
-        status.textContent = `Showing ${matches.length} report${matches.length === 1 ? "" : "s"} for ${month} ${year}.`;
-      }
-
-      container.hidden = false;
-      container.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-
-    clearBtn.addEventListener("click", () => {
-      monthSelect.value = "";
-      yearSelect.value = "";
-      status.textContent = "";
-      const container = el("#result-container");
-      if (container) {
-        container.innerHTML = renderEmptyResult();
-        container.hidden = false;
-      }
-    });
+    if (window.__refreshAlertFilterYears) window.__refreshAlertFilterYears();
   }
 
   function buildSearchIndex() {
@@ -812,6 +744,113 @@
     }, 400);
   }
 
+  /* ---------------- Month / year report filter ---------------- */
+
+  function initAlertFilter() {
+    const monthSelect = el("#alert-month");
+    const yearSelect = el("#alert-year");
+    const filterBtn = el("#alert-filter-btn");
+    const clearBtn = el("#alert-filter-clear");
+    const status = el("#alert-filter-status");
+    const container = el("#result-container");
+    if (!monthSelect || !yearSelect || !filterBtn || !clearBtn || !status || !container) return;
+
+    MONTHS.forEach((month) => {
+      const option = document.createElement("option");
+      option.value = month;
+      option.textContent = month;
+      monthSelect.appendChild(option);
+    });
+
+    function populateYears() {
+      const years = [...new Set((DB.records || []).map((r) => String(r.alertYear || "")).filter(Boolean))]
+        .sort((a, b) => Number(a) - Number(b));
+      yearSelect.innerHTML = '<option value="">Select year</option>';
+      years.forEach((year) => {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      });
+    }
+
+    function applyFilter() {
+      const month = monthSelect.value;
+      const year = yearSelect.value;
+      if (!month || !year) {
+        status.textContent = "Select both a month and year.";
+        status.className = "alert-filter-status is-error";
+        return;
+      }
+
+      const matches = (DB.records || []).filter((record) =>
+        String(record.alertMonth || "").trim().toLowerCase() === month.trim().toLowerCase() &&
+        String(record.alertYear || "").trim() === String(year).trim()
+      );
+
+      if (!matches.length) {
+        status.textContent = `No reports found for ${month} ${year}.`;
+        status.className = "alert-filter-status is-error";
+        container.innerHTML = `
+          <article class="result-card status-clear">
+            <span class="result-badge">🟢 NO REPORTS FOUND</span>
+            <p class="result-message">No CDSCO quality-alert reports were found for ${escapeHTML(month)} ${escapeHTML(year)}.</p>
+            <p class="result-note">Try another month and year. The filter uses the report month and year stored in the Pharma Shield dataset.</p>
+          </article>`;
+        container.hidden = false;
+        container.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      const sorted = [...matches].sort((a, b) => {
+        const am = normalizeDisplay(a.medicineName);
+        const bm = normalizeDisplay(b.medicineName);
+        return am.localeCompare(bm);
+      });
+
+      const rows = sorted.map((record) => {
+        const cat = categoryInfo(record.category);
+        return `
+          <div class="result-field">
+            <dt>${escapeHTML(record.medicineName || "Medicine name not listed")}</dt>
+            <dd>
+              Batch ${escapeHTML(record.batchNumber || "—")} &middot; ${cat.emoji} ${escapeHTML(cat.key)}
+              <br><span class="dim">${escapeHTML(record.manufacturer || "Manufacturer not listed")}</span>
+            </dd>
+          </div>`;
+      }).join("");
+
+      container.innerHTML = `
+        <article class="result-card status-history" role="region" aria-label="${escapeHTML(month)} ${escapeHTML(year)} reports">
+          <span class="result-badge">📋 REPORT HISTORY</span>
+          <p class="result-message">Showing <strong>${matches.length}</strong> CDSCO quality-alert report${matches.length === 1 ? "" : "s"} for ${escapeHTML(month)} ${escapeHTML(year)}.</p>
+          <dl class="result-grid">${rows}</dl>
+          <div class="result-actions">
+            <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
+          </div>
+        </article>`;
+      container.hidden = false;
+      status.textContent = `Showing ${matches.length} report${matches.length === 1 ? "" : "s"} for ${month} ${year}.`;
+      status.className = "alert-filter-status is-active";
+      container.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function clearFilter() {
+      monthSelect.value = "";
+      yearSelect.value = "";
+      status.textContent = "";
+      status.className = "alert-filter-status";
+      container.innerHTML = renderEmptyResult();
+      container.hidden = false;
+    }
+
+    filterBtn.addEventListener("click", applyFilter);
+    clearBtn.addEventListener("click", clearFilter);
+
+    populateYears();
+    window.__refreshAlertFilterYears = populateYears;
+  }
+
   /* ---------------- OCR / Medicine scanner ---------------- */
 
   let tesseractLoadPromise = null;
@@ -1060,6 +1099,7 @@
     initAutocomplete();
     initScanner();
     initFeedbackForm();
+    initAlertFilter();
     renderSearchHistory();
 
     const container = el("#result-container");
@@ -1069,6 +1109,5 @@
     }
 
     await loadDrugData();
-    initReportFilter();
   });
 })();
