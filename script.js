@@ -870,48 +870,101 @@
     return tesseractLoadPromise;
   }
 
+  function normalizeOcrLine(line) {
+    return String(line || "")
+      .replace(/[|]/g, "I")
+      .replace(/[“”‘’]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function cleanOcrCandidate(line) {
+    return normalizeOcrLine(line)
+      .replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, "")
+      .trim();
+  }
+
+  function isOcrLabelLine(line) {
+    return /^(mfg|mfd|manufactured|manufacturing|exp|expiry|batch|b\.?\s*no|lot|mrp|price|net|qty|quantity|composition|storage|dosage|store|schedule|marketed|distributed|warning|caution|prescription|rx|each|contains)\b/i.test(line);
+  }
+
   function parseOcrText(text) {
-    const lines = text
-      .split("\n")
-      .map((l) => l.trim())
+    const lines = String(text || "")
+      .split(/\r?\n/)
+      .map(normalizeOcrLine)
       .filter(Boolean);
 
-    // --- batch number: look for explicit "Batch/B.No" labels first ---
+    // Batch number: labelled text gets priority.
     let batch = "";
     let batchConfident = false;
-    const batchLabelRe = /(?:b\.?\s*no\.?|batch\s*no\.?|batch\s*number|batch)\s*[:\-]?\s*([A-Z0-9\-\/]{3,15})/i;
+    const batchLabelRe = /(?:b\.?\s*no\.?|batch\s*(?:no\.?|number)?|lot\s*(?:no\.?)?)\s*[:#\-]?\s*([A-Z0-9][A-Z0-9\-\/]{2,15})\b/i;
+
     for (const line of lines) {
-      const m = line.match(batchLabelRe);
-      if (m) {
-        batch = m[1].toUpperCase();
+      const match = line.match(batchLabelRe);
+      if (!match) continue;
+      const candidate = match[1].toUpperCase();
+      if (!/^\d{1,4}(?:[\/\-]\d{1,4}){1,2}$/.test(candidate)) {
+        batch = candidate;
         batchConfident = true;
         break;
       }
     }
+
+    // Fallback batch detection: mixed letters + numbers, but avoid dates/strengths.
     if (!batch) {
-      // fallback: a standalone alphanumeric token mixing letters+digits
-      const tokenRe = /\b(?=[A-Z0-9]{4,12}\b)(?=[A-Z0-9]*[0-9])(?=[A-Z0-9]*[A-Z])[A-Z0-9]{4,12}\b/;
+      const tokenRe = /\b[A-Z0-9]{4,15}\b/gi;
       for (const line of lines) {
-        const m = line.toUpperCase().match(tokenRe);
-        if (m) {
-          batch = m[0];
+        if (isOcrLabelLine(line)) continue;
+        const tokens = line.toUpperCase().match(tokenRe) || [];
+        const candidate = tokens.find((token) =>
+          /[A-Z]/.test(token) &&
+          /\d/.test(token) &&
+          !/^\d{1,4}(?:[\/\-]\d{1,4}){1,2}$/.test(token)
+        );
+        if (candidate) {
+          batch = candidate;
           break;
         }
       }
     }
 
-    // --- medicine name: skip common non-name lines, prefer an early
-    //     line with letters that isn't a label line ---
-    const skipRe = /^(mfg|mfd|exp|batch|b\.?no|mrp|price|net|qty|composition|storage|dosage|store|schedule|marketed|distributed)/i;
-    let medicineName = "";
-    for (const line of lines) {
-      if (skipRe.test(line)) continue;
-      if (!/[a-zA-Z]{3,}/.test(line)) continue;
-      medicineName = line;
-      break;
+    // Medicine name: score plausible pharmaceutical lines instead of taking
+    // the first readable OCR line.
+    const dosageFormRe = /\b(tablets?|capsules?|caplets?|syrup|suspension|injection|injectable|cream|ointment|gel|lotion|drops?|solution|powder|granules?|softgel|dry\s+syrup|oral\s+solution|dispersible|film[-\s]?coated)\b/i;
+    const noiseRe = /\b(pharma|pharmaceuticals?|laborator(?:y|ies)|pvt\.?\s*ltd|limited|ltd|manufactured\s+by|marketed\s+by|distributed\s+by|address|phone|tel|email|www\.|composition|storage|warning|caution|prescription|batch|mfg|mfd|expiry|mrp|price)\b/i;
+
+    const candidates = [];
+    lines.forEach((line, index) => {
+      const candidate = cleanOcrCandidate(line);
+      if (candidate.length < 4 || candidate.length > 100) return;
+      if (!/[A-Za-z]{3,}/.test(candidate)) return;
+      if (noiseRe.test(candidate)) return;
+
+      let score = 0;
+      if (dosageFormRe.test(candidate)) score += 10;
+      if (/\b\d+(?:\.\d+)?\s*(mg|mcg|g|ml|iu)\b/i.test(candidate)) score += 3;
+      if (index < 4) score += 3;
+      else if (index < 8) score += 1;
+      if (candidate.split(/\s+/).length <= 10) score += 1;
+
+      candidates.push({ candidate, score, index });
+    });
+
+    candidates.sort((a, b) => b.score - a.score || a.index - b.index);
+
+    let medicineName = candidates.length ? candidates[0].candidate : "";
+
+    const dosageCandidate = candidates.find(
+      item => dosageFormRe.test(item.candidate)
+    );
+    if (dosageCandidate && dosageCandidate.score >= (candidates[0]?.score || 0) - 2) {
+      medicineName = dosageCandidate.candidate;
     }
 
-    const nameConfident = medicineName.length >= 4 && medicineName.length <= 60;
+    const nameConfident =
+      medicineName.length >= 4 &&
+      medicineName.length <= 100 &&
+      !noiseRe.test(medicineName);
 
     return {
       medicineName,
@@ -919,6 +972,63 @@
       confident: batchConfident && nameConfident,
       rawText: text
     };
+  }
+
+
+  function preprocessImageForOcr(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+
+      img.onload = () => {
+        try {
+          const maxWidth = 2200;
+          const scale = Math.min(1, maxWidth / Math.max(img.naturalWidth, 1));
+          const width = Math.max(900, Math.round(img.naturalWidth * scale));
+          const height = Math.max(900, Math.round(img.naturalHeight * scale));
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const imageData = ctx.getImageData(0, 0, width, height);
+          const data = imageData.data;
+
+          // Mild grayscale + contrast enhancement for printed package text.
+          for (let i = 0; i < data.length; i += 4) {
+            const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+            const enhanced = Math.max(0, Math.min(255, (gray - 128) * 1.22 + 128));
+            data[i] = enhanced;
+            data[i + 1] = enhanced;
+            data[i + 2] = enhanced;
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+
+          canvas.toBlob((blob) => {
+            URL.revokeObjectURL(url);
+            if (!blob) {
+              reject(new Error("Could not prepare image for OCR"));
+              return;
+            }
+            resolve(blob);
+          }, "image/jpeg", 0.92);
+        } catch (error) {
+          URL.revokeObjectURL(url);
+          reject(error);
+        }
+      };
+
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Could not read the selected image"));
+      };
+
+      img.src = url;
+    });
   }
 
   function initScanner() {
@@ -983,14 +1093,17 @@
       try {
         await loadTesseract();
 
-        statusEl.textContent = "Scanning medicine package…";
+        statusEl.textContent = "Preparing image for better OCR…";
+        const ocrImage = await preprocessImageForOcr(file);
 
-        const { data } = await window.Tesseract.recognize(file, "eng", {
+        statusEl.textContent = "Scanning medicine package…";
+        const { data } = await window.Tesseract.recognize(ocrImage, "eng", {
           logger: (m) => {
             if (m.status === "recognizing text" && typeof m.progress === "number") {
               statusEl.textContent = `Scanning medicine package… ${Math.round(m.progress * 100)}%`;
             }
-          }
+          },
+          preserve_interword_spaces: "1"
         });
 
         const parsed = parseOcrText(data.text || "");
