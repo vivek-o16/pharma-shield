@@ -303,32 +303,14 @@
 
   function renderAlertResult(record) {
     const cat = categoryInfo(record.category);
-    const reason = normalizeDisplay(record.reason) || "No test-failure detail was specified in the source record.";
-    const categoryLabel = cat.key === "NSQ"
-      ? "The record is classified as Not of Standard Quality (NSQ)."
-      : "The record is listed as a quality-alert record in the available dataset.";
-    const intelligence = `
-      <aside class="shield-intelligence">
-        <div class="intelligence-head">
-          <div><span class="eyebrow">SHIELD INTELLIGENCE</span><h3>Read the record in plain language.</h3></div>
-          <span class="intelligence-tag">SOURCE DATA FIRST</span>
-        </div>
-        <p>${escapeHTML(categoryLabel)} The reported quality signal is: <strong>${escapeHTML(reason)}</strong></p>
-        <div class="intelligence-points">
-          <div><b>WHAT THIS TELLS YOU</b><span>This record is a regulatory quality signal attached to the medicine/batch shown below.</span></div>
-          <div><b>WHAT TO VERIFY</b><span>Confirm the exact batch, manufacturer, report period and original source before drawing conclusions.</span></div>
-          <div><b>IMPORTANT</b><span>This explanation does not replace the original regulatory record or professional judgement.</span></div>
-        </div>
-      </aside>`;
-
     return `
       <article class="result-card status-alert" role="alert">
-        <div class="result-topline">
-          <span class="result-badge">${cat.emoji} ${cat.key} FOUND</span>
-          <span class="result-source-chip">REGULATORY RECORD</span>
-        </div>
-        <h2 class="result-title">Alert detected in the Pharma Shield index.</h2>
-        <p class="result-message">This medicine/batch matches a CDSCO quality-alert record in the available Pharma Shield dataset.</p>
+        <span class="result-badge">${cat.emoji} ${cat.key} FOUND</span>
+
+        <p class="result-message">
+          This medicine/batch matches a CDSCO quality-alert record in the Pharma Shield dataset.
+        </p>
+
         <dl class="result-grid">
           ${fieldRow("Drug name", record.medicineName)}
           ${fieldRow("Batch number", record.batchNumber, true)}
@@ -342,12 +324,12 @@
           ${fieldRow("Reported by", record.reportedBy)}
           ${fieldRow("Source", record.sourceFile ? "CDSCO Drug Quality Alert" : "—")}
         </dl>
-        ${intelligence}
+
         <div class="result-actions">
           <button class="btn btn-outline" type="button" data-print>🖨 Print result</button>
-          <button class="btn btn-outline" type="button" data-ai-explain="true" data-record-id="${escapeHTML(record.id)}">✦ Explain with AI</button>
           <a class="btn btn-outline" href="https://cdsco.gov.in" target="_blank" rel="noopener noreferrer">Verify on CDSCO ↗</a>
         </div>
+
         ${DB.isDemoData ? '<p class="result-note">This result is based on fallback sample data, not the live dataset.</p>' : ""}
       </article>`;
   }
@@ -1873,44 +1855,6 @@
     if (clearBtn) clearBtn.addEventListener("click", clearSearchHistory);
   }
 
-  /* ---------------- Safe AI handoff ----------------
-     GitHub Pages cannot safely hold a private AI API key. This button prepares
-     a source-grounded prompt from the real record and hands it to the user's
-     preferred AI workspace instead of exposing credentials in frontend code. */
-  function initAIHandoff() {
-    document.addEventListener("click", async (event) => {
-      const btn = event.target.closest("[data-ai-explain]");
-      if (!btn) return;
-      const id = btn.getAttribute("data-record-id");
-      const record = (DB.records || []).find((r) => String(r.id) === String(id));
-      if (!record) return;
-
-      const prompt = [
-        "Explain this pharmaceutical regulatory record in simple educational language.",
-        "Do not diagnose, prescribe, certify safety, invent missing facts, or change the source record.",
-        "Clearly distinguish source facts from explanation.",
-        "",
-        `Medicine: ${record.medicineName || "Not specified"}`,
-        `Batch: ${record.batchNumber || "Not specified"}`,
-        `Manufacturer: ${record.manufacturer || "Not specified"}`,
-        `Report type: ${record.category || "Not specified"}`,
-        `Reason/Test failure: ${record.reason || "Not specified"}`,
-        `Report period: ${formatAlertPeriod(record)}`,
-        `Drawn by: ${record.drawnBy || "Not specified"}`,
-        `Reported by: ${record.reportedBy || "Not specified"}`,
-        `Source file: ${record.sourceFile || "Not specified"}`
-      ].join("\n");
-
-      try {
-        await navigator.clipboard.writeText(prompt);
-        showToast("Source-grounded AI prompt copied. Paste it into your AI assistant.", "clear");
-        window.open("https://gemini.google.com/app", "_blank", "noopener,noreferrer");
-      } catch (err) {
-        showToast("AI prompt could not be copied automatically. Please try again.", "history");
-      }
-    });
-  }
-
   /* ---------------- Init ---------------- */
 
   document.addEventListener("DOMContentLoaded", async () => {
@@ -1919,7 +1863,6 @@
     initAutocomplete();
     initScanner();
     initFeedbackForm();
-    initAIHandoff();
     initAlertFilter();
     renderSearchHistory();
 
@@ -1932,4 +1875,3 @@
     await loadDrugData();
   });
 })();
-

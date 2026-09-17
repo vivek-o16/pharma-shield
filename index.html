@@ -1,189 +1,413 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pharma Shield 2.0 — Drug Safety Intelligence</title>
-<meta name="description" content="Pharma Shield turns drug-quality alerts and regulatory records into a searchable medicine-safety intelligence experience.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharma Shield — Drug Alert Checker</title>
+  <meta name="description" content="Pharma Shield checks medicine names and batch numbers against the available CDSCO quality-alert dataset.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+<style id="scanner-straight-fix">
+  /* Pharma Shield: keep the scanner perfectly straight */
+  .visual-card {
+    transform: none !important;
+    rotate: 0deg !important;
+    perspective: none !important;
+  }
+
+  .scan-stage,
+  .shield-large,
+  .scan-line {
+    rotate: 0deg !important;
+  }
+
+  .scan-line {
+    transform-origin: center center;
+  }
+</style>
+
 </head>
 <body>
-<div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
 
-<header class="site-header" id="site-header">
-  <div class="shell header-shell">
-    <a class="brand" href="#home" aria-label="Pharma Shield home">
-      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span>
-      <span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span>
-    </a>
-    <nav class="main-nav" id="main-nav" aria-label="Primary navigation">
-      <a href="#home" data-nav>Overview</a>
-      <a href="#check" data-nav>Check Drug</a>
-      <a href="#analytics" data-nav>Intelligence</a>
-      <a href="#recent" data-nav>Alert Explorer</a>
-      <a href="#how-it-works" data-nav>How It Works</a>
-      <a href="#about" data-nav>About</a>
-      <a href="prohibited.html" data-nav>Prohibited Drugs</a>
-    </nav>
-    <a class="header-cta" href="#check">Open Drug Check <span>↗</span></a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
-  </div>
-</header>
+  <header class="site-header" id="site-header">
+    <div class="shell header-shell">
+      <a href="#home" class="brand" aria-label="Pharma Shield home">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg>
+        </span>
+        <span>
+          <strong>Pharma Shield</strong>
+          <small>Drug quality alert checker</small>
+        </span>
+      </a>
 
-<main>
-<section class="hero" id="home">
-  <div class="hero-grid"></div><div class="hero-orb hero-orb-a"></div><div class="hero-orb hero-orb-b"></div>
-  <div class="shell hero-shell">
-    <div class="hero-copy">
-      <div class="eyebrow"><i></i> REGULATORY INTELLIGENCE · CDSCO-DERIVED DATA</div>
-      <h1>Don't just search a medicine.<br><em>Understand its record.</em></h1>
-      <p class="hero-lead">Pharma Shield turns scattered drug-quality alerts into a clear, searchable intelligence layer for pharmacy education and medicine-safety awareness.</p>
-      <div class="hero-actions"><a href="#check" class="btn btn-primary">Check a medicine <span>→</span></a><a href="prohibited.html" class="btn btn-ghost">Explore prohibited drugs</a></div>
-      <div class="hero-trust"><span>● Real regulatory dataset</span><span>● Source-linked records</span><span>● No patient data stored</span></div>
+      <nav class="main-nav" id="main-nav">
+        <a href="#home" data-nav>Home</a>
+        <a href="#check" data-nav>Check Drug</a>
+        <a href="#analytics" data-nav>Analytics</a>
+        <a href="#recent" data-nav>Alerts</a>
+        <a href="#how-it-works" data-nav>How It Works</a>
+        <a href="#about" data-nav>About</a>
+        <a href="prohibited.html" data-nav>Prohibited Drugs</a>
+      </nav>
+
+      <a class="header-cta" href="#check">Check a medicine <span>→</span></a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-    <div class="hero-command">
-      <div class="command-top"><span class="live-dot"></span><span>PHARMA SHIELD COMMAND</span><b>2.0</b></div>
-      <div class="command-title">What are you verifying?</div>
-      <a class="command-card" href="#check"><span class="command-icon">⌕</span><span><strong>Medicine / batch</strong><small>Search the regulatory alert index</small></span><span>→</span></a>
-      <button class="command-card" type="button" id="scan-open-btn"><span class="command-icon">⌁</span><span><strong>Package scan</strong><small>Use OCR to pre-fill medicine details</small></span><span>→</span></button>
-      <div class="command-foot"><span>6,284 alert records</span><span>444 prohibited entries</span></div>
-    </div>
-  </div>
-</section>
+  </header>
 
-<section class="workspace section-pad" id="check">
-  <div class="shell">
-    <div class="section-head split">
-      <div><span class="eyebrow">01 · VERIFY</span><h2>One search. A regulatory trail.</h2><p>Start with a medicine name, or narrow the check with an exact batch number.</p></div>
-      <div class="head-note"><span class="signal"></span> Search results stay tied to the source record.</div>
-    </div>
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-glow hero-glow-a"></div>
+      <div class="hero-glow hero-glow-b"></div>
+      <div class="shell hero-shell">
+        <div class="hero-copy">
+          <div class="status-pill"><span class="pulse-dot"></span> CDSCO quality-alert lookup</div>
+          <h1>Check a medicine.<br><em>Know the alert.</em></h1>
+          <p class="hero-sub">Enter a medicine name and optional batch number to check the records currently available in Pharma Shield.</p>
 
-    <div class="check-layout">
-      <div class="search-panel">
-        <div class="panel-label">MEDICINE CHECK</div>
-        <form id="search-form" novalidate>
-          <div class="field-block">
-            <label for="medicine-name">Medicine / brand name</label>
-            <div class="input-wrap"><span class="input-icon">⌕</span><input id="medicine-name" name="medicineName" type="text" placeholder="e.g. Paracetamol 500 mg" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="medicine-suggestions"><span class="key-hint">↵</span></div>
-            <ul id="medicine-suggestions" class="suggestion-list" role="listbox" hidden></ul>
+          <form class="search-card" id="search-form" novalidate>
+            <div class="search-field">
+              <label for="medicine-name">Medicine name</label>
+              <div class="input-wrap">
+                <span class="input-icon">⌕</span>
+                <input type="text" id="medicine-name" name="medicineName" placeholder="e.g. Paracetamol 500mg" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="medicine-suggestions">
+              </div>
+              <ul class="suggestion-list" id="medicine-suggestions" role="listbox" hidden></ul>
+            </div>
+            <div class="search-field">
+              <label for="batch-number">Batch number <span>optional</span></label>
+              <div class="input-wrap">
+                <span class="input-icon">#</span>
+                <input type="text" id="batch-number" name="batchNumber" placeholder="e.g. ABC123" autocomplete="off">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-check" id="check-btn">
+              <span class="btn-label">Check drug</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </form>
+
+          <div class="scan-cta">
+            <button type="button" class="btn btn-scan" id="scan-open-btn">📷 Scan medicine package</button>
+            <span class="hero-note" style="margin:0">Upload or photograph a strip/box to auto-fill the search.</span>
           </div>
-          <div class="field-block">
-            <label for="batch-number">Batch number <span>optional</span></label>
-            <div class="input-wrap"><span class="input-icon">#</span><input id="batch-number" name="batchNumber" type="text" placeholder="e.g. ABC123" autocomplete="off"></div>
+
+          <div class="scan-panel" id="scan-panel" hidden>
+            <div class="scan-panel-head">
+              <h3>📷 Scan medicine</h3>
+              <button type="button" class="scan-close" id="scan-close-btn" aria-label="Close scanner">×</button>
+            </div>
+
+            <input type="file" id="scan-file-input" accept="image/*" capture="environment" hidden>
+            <div class="scan-dropzone" id="scan-dropzone" tabindex="0" role="button" aria-label="Upload or capture a photo of the medicine package">
+              <strong>Upload a photo or use your camera</strong>
+              Click to choose an image of the medicine strip/box
+              <small>OCR runs only when you upload — nothing is scanned automatically.</small>
+            </div>
+
+            <div class="scan-preview" id="scan-preview" hidden>
+              <img id="scan-preview-img" alt="Uploaded medicine package preview">
+            </div>
+
+            <p class="scan-status" id="scan-status" hidden></p>
+
+            <div class="scan-verify" id="scan-verify" hidden>
+              <p class="scan-confidence" id="scan-confidence-note"></p>
+              <label for="scan-name-field">Medicine name (extracted — edit if needed)</label>
+              <input type="text" id="scan-name-field">
+              <label for="scan-batch-field">Batch number (extracted — edit if needed)</label>
+              <input type="text" id="scan-batch-field">
+              <div class="scan-actions">
+                <button type="button" class="btn btn-primary" id="scan-use-btn">Verify medicine →</button>
+                <button type="button" class="btn btn-outline" id="scan-rescan-btn">Scan another photo</button>
+              </div>
+            </div>
           </div>
-          <button id="check-btn" class="btn btn-primary check-submit" type="submit"><span class="btn-label">Run verification</span><span class="btn-spinner"></span><span class="btn-arrow">→</span></button>
+
+          <div class="history-strip" id="history-strip" hidden>
+            <span class="history-strip-label">Recent searches</span>
+            <div class="history-pills" id="history-pills"></div>
+            <button class="history-clear" id="history-clear" type="button">Clear</button>
+          </div>
+
+          <div class="alert-filter-card" id="alert-filter-card">
+            <div class="alert-filter-head">
+              <div>
+                <span class="filter-kicker">REPORT HISTORY</span>
+                <h3>Check reports by month &amp; year</h3>
+                <p>See all CDSCO quality-alert reports recorded for a selected month and year.</p>
+              </div>
+            </div>
+            <div class="alert-filter-controls">
+              <div class="search-field filter-field">
+                <label for="alert-month">Month</label>
+                <select id="alert-month">
+                  <option value="">Select month</option>
+                </select>
+              </div>
+              <div class="search-field filter-field">
+                <label for="alert-year">Year</label>
+                <select id="alert-year">
+                  <option value="">Select year</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-primary" id="alert-filter-btn">Filter Reports</button>
+              <button type="button" class="btn btn-outline" id="alert-filter-clear">Clear Filter</button>
+            </div>
+            <p class="alert-filter-status" id="alert-filter-status" aria-live="polite"></p>
+          </div>
+
+          <div class="hero-note">
+            <span>✓</span> Search runs locally in your browser. No personal information is stored.
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-card">
+            <div class="visual-top"><span>PHARMA SHIELD</span><span>SCAN 01</span></div>
+            <div class="scan-stage">
+              <div class="scan-orbit orbit-one"></div>
+              <div class="scan-orbit orbit-two"></div>
+              <div class="shield-large">
+                <svg viewBox="0 0 160 180">
+                  <path d="M80 8 139 29v51c0 38-23 64-59 82C44 144 21 118 21 80V29z"/>
+                  <path d="M80 52v58M51 81h58"/>
+                </svg>
+              </div>
+              <div class="scan-line"></div>
+              <div class="scan-chip chip-one">DATABASE<br><b>READY</b></div>
+              <div class="scan-chip chip-two">STATUS<br><b>ACTIVE</b></div>
+            </div>
+            <div class="visual-bottom"><span><i></i> Browser lookup</span><span>Secure UI</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-section" id="check">
+      <div class="shell">
+        <div id="result-container" class="result-container" hidden></div>
+      </div>
+    </section>
+
+    <section class="stats-section" id="stats">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">DATASET</span>
+            <h2>At a glance</h2>
+          </div>
+          <span class="dataset-badge">● Loaded in browser</span>
+        </div>
+        <p class="section-sub">Live figures calculated from the JSON records currently loaded by Pharma Shield.</p>
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card stat-featured"><span class="stat-icon">▦</span><strong id="stat-total">—</strong><span>Total records</span></div>
+          <div class="stat-card"><span class="stat-icon red">!</span><strong id="stat-nsq">—</strong><span>NSQ records</span></div>
+          <div class="stat-card"><span class="stat-icon teal">⌂</span><strong id="stat-manufacturers">—</strong><span>Manufacturers</span></div>
+          <div class="stat-card"><span class="stat-icon blue">↻</span><strong id="stat-updated">—</strong><span>Last updated</span></div>
+        </div>
+
+        <div class="historical-strip" id="historical-database">
+          <div class="stat-card"><span class="stat-icon blue">▤</span><strong id="hist-years">—</strong><span>Years covered</span></div>
+          <div class="stat-card"><span class="stat-icon">▦</span><strong id="hist-total">—</strong><span>Total records</span></div>
+          <div class="stat-card"><span class="stat-icon red">!</span><strong id="hist-nsq">—</strong><span>NSQ records</span></div>
+          <div class="stat-card"><span class="stat-icon amber">⚠</span><strong id="hist-alerted">—</strong><span>Other alerted records</span></div>
+        </div>
+        <p class="historical-note" id="hist-coverage-note"></p>
+      </div>
+    </section>
+
+    <section class="analytics-section" id="analytics">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">ANALYTICS</span>
+            <h2 style="color:#fff">Drug quality alerts, visualized</h2>
+          </div>
+        </div>
+        <p class="section-sub">Charts computed live from the records currently loaded by Pharma Shield.</p>
+
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <h4>Drug quality alerts by year</h4>
+            <div class="year-chart" id="chart-years"></div>
+          </div>
+          <div class="analytics-card">
+            <h4>NSQ vs. other alerts</h4>
+            <div id="chart-category-split"></div>
+          </div>
+          <div class="analytics-card">
+            <h4>Top manufacturers with alerts</h4>
+            <div id="chart-manufacturers"></div>
+          </div>
+          <div class="analytics-card">
+            <h4>Most common failure reasons</h4>
+            <div id="chart-reasons"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="recent-section" id="recent">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="section-kicker">WATCHLIST</span>
+            <h2>Recent quality alerts</h2>
+          </div>
+          <a href="#check" class="text-link">Check a medicine →</a>
+        </div>
+        <p class="section-sub">The latest records in the currently loaded dataset.</p>
+        <div class="recent-grid" id="recent-grid"></div>
+      </div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+      <div class="shell">
+        <div class="section-head centered">
+          <div>
+            <span class="section-kicker">SIMPLE PROCESS</span>
+            <h2>How Pharma Shield works</h2>
+          </div>
+        </div>
+        <div class="steps steps-4">
+          <article class="step">
+            <span class="step-number">01</span>
+            <div class="step-icon">⌕</div>
+            <h3>Search</h3>
+            <p>Enter a medicine name and, if available, the batch number printed on the pack.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02</span>
+            <div class="step-icon">📷</div>
+            <h3>Scan</h3>
+            <p>Optionally upload or photograph the medicine packaging instead of typing.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03</span>
+            <div class="step-icon">◈</div>
+            <h3>Verify</h3>
+            <p>Pharma Shield checks your input against the available CDSCO-derived dataset.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">04</span>
+            <div class="step-icon">✓</div>
+            <h3>Review</h3>
+            <p>See the result and confirm important findings against the official CDSCO source.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-section" id="why">
+      <div class="shell">
+        <div class="section-head centered">
+          <div>
+            <span class="section-kicker">WHY PHARMA SHIELD?</span>
+            <h2>The problem, the solution, the impact</h2>
+          </div>
+        </div>
+        <div class="why-grid">
+          <div class="why-card">
+            <h3>The problem</h3>
+            <p>CDSCO drug-quality reports contain important information, but searching through large reports manually can be time-consuming.</p>
+          </div>
+          <div class="why-card">
+            <h3>The solution</h3>
+            <p>Pharma Shield provides a simple medicine and batch-based search interface to quickly identify matching quality-alert records.</p>
+          </div>
+          <div class="why-card">
+            <h3>The impact</h3>
+            <p>Users can quickly locate relevant records and verify the information against official CDSCO sources.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="innovation-section" id="innovation">
+      <div class="shell">
+        <div class="section-head centered">
+          <div>
+            <span class="section-kicker">INNOVATION</span>
+            <h2>What makes Pharma Shield different?</h2>
+          </div>
+        </div>
+        <div class="innovation-grid">
+          <div class="innovation-card"><span>01</span><h4>Batch-level checking</h4><p>Search using medicine name and specific batch number.</p></div>
+          <div class="innovation-card"><span>02</span><h4>Instant alerts</h4><p>Clearly identify matching NSQ/quality-alert records.</p></div>
+          <div class="innovation-card"><span>03</span><h4>Medicine scanning</h4><p>Use OCR to extract medicine information from package images.</p></div>
+          <div class="innovation-card"><span>04</span><h4>Historical database</h4><p>Search available historical CDSCO drug-quality records.</p></div>
+          <div class="innovation-card"><span>05</span><h4>Easy access</h4><p>Browser-based interface with no installation required.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="shell about-grid">
+        <div class="about-copy">
+          <span class="section-kicker">THE PROJECT</span>
+          <h2>Built to make drug-alert information easier to check.</h2>
+          <p>Pharma Shield is an educational drug-quality awareness platform for quickly searching medicine and batch information against the dataset included with this project.</p>
+          <p>The dataset bundled with this project is organized from official CDSCO drug-quality alert publications. Pharma Shield does not certify medicines as safe — always verify important findings against the official CDSCO source.</p>
+        </div>
+        <aside class="source-card">
+          <div class="source-icon">⌁</div>
+          <span class="section-kicker">OFFICIAL SOURCE</span>
+          <h3>CDSCO</h3>
+          <p>Quality alerts and NSQ notices are published by the Central Drugs Standard Control Organisation, Government of India.</p>
+          <a class="btn btn-outline" href="https://cdsco.gov.in" target="_blank" rel="noopener noreferrer">Visit CDSCO ↗</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="feedback-section" id="feedback">
+      <div class="shell feedback-shell">
+        <div>
+          <span class="section-kicker">FEEDBACK</span>
+          <h2>Help improve the project.</h2>
+          <p>Use this demo form to show the intended feedback flow. It does not send information to a server.</p>
+        </div>
+        <form class="feedback-form" id="feedback-form">
+          <input type="email" id="fb-email" placeholder="Email (optional)" autocomplete="off">
+          <textarea id="fb-message" rows="3" placeholder="Your suggestion or issue" required></textarea>
+          <button type="submit" class="btn btn-primary">Send feedback →</button>
         </form>
-        <div class="search-divider"><span>OR</span></div>
-        <div class="scan-inline"><button class="btn btn-outline" type="button" id="scan-open-btn-2" onclick="document.getElementById('scan-open-btn').click()">Scan package</button><span>OCR can help fill the medicine and batch fields.</span></div>
-        <div id="history-strip" class="history-strip"><div class="mini-label">RECENT CHECKS</div><div id="history-pills" class="history-pills"></div><button id="history-clear" class="link-button" type="button">Clear</button></div>
       </div>
+    </section>
 
-      <aside class="method-panel">
-        <div class="method-icon">◈</div>
-        <span class="eyebrow">WHAT GETS CHECKED</span>
-        <h3>Signal, record, source.</h3>
-        <div class="method-list"><div><b>01</b><span>Medicine &amp; batch matching</span></div><div><b>02</b><span>Alert category and test failure</span></div><div><b>03</b><span>Traceability and report period</span></div><div><b>04</b><span>Official source verification</span></div></div>
-        <p>“No matching alert found” is not a certification of safety or quality.</p>
-      </aside>
-    </div>
-
-    <div class="scan-panel" id="scan-panel" hidden>
-      <div class="scan-panel-head"><div><span class="eyebrow">PACKAGE INTELLIGENCE</span><h3>Scan and review</h3></div><button class="icon-button scan-close" id="scan-close-btn" type="button" aria-label="Close scanner">×</button></div>
-      <input type="file" id="scan-file-input" accept="image/*" capture="environment" hidden>
-      <div class="scan-workbench">
-        <div class="scan-dropzone" id="scan-dropzone" tabindex="0" role="button"><div class="scan-graphic">⌁</div><strong>Upload or capture a medicine package</strong><span>Use a clear strip/box image with readable text.</span></div>
-        <div id="scan-preview" class="scan-preview" hidden><img id="scan-preview-img" alt="Medicine package preview"></div>
-        <div class="scan-readout"><div id="scan-status" class="scan-status">Waiting for an image.</div><div id="scan-raw-details" class="scan-raw-details"></div><div id="scan-raw-text" class="scan-raw-text"></div></div>
+    <section class="disclaimer-section" id="disclaimer">
+      <div class="shell">
+        <div class="disclaimer-card">
+          <div class="disclaimer-mark">!</div>
+          <div>
+            <span class="section-kicker">IMPORTANT</span>
+            <h2>Educational project — not a safety certificate.</h2>
+            <p>“No alert found” only means that no matching record was found in the available dataset. It does not guarantee that a medicine is safe, genuine, or free from quality issues. Verify important information with official sources and consult a qualified healthcare professional for medical decisions.</p>
+          </div>
+        </div>
       </div>
-      <div class="scan-review">
-        <div><label for="scan-name-field">Detected medicine</label><input id="scan-name-field" type="text"></div>
-        <div><label for="scan-batch-field">Detected batch</label><input id="scan-batch-field" type="text"></div>
-        <p id="scan-confidence-note" class="scan-confidence-note">OCR output should be reviewed before verification.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-shell">
+      <div class="footer-brand">
+        <span class="brand-icon small"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span>
+        <strong>Pharma Shield</strong>
       </div>
-      <div class="scan-actions"><button id="scan-verify" class="btn btn-primary" type="button">Process image</button><button id="scan-use-btn" class="btn btn-outline" type="button">Use in search</button><button id="scan-rescan-btn" class="btn btn-outline" type="button">Scan again</button></div>
+      <p>College Innovation Practical · Educational use · Not affiliated with CDSCO<br>
+      Data Source: CDSCO · Purpose: Educational / Informational · Package scanning uses the open-source Tesseract.js OCR library, loaded only when you use the scanner.</p>
     </div>
+  </footer>
 
-    <div id="result-container" class="result-container" aria-live="polite"></div>
-
-    <div class="filter-card" id="alert-filter-card">
-      <div><span class="eyebrow">HISTORICAL VIEW</span><h3>Explore a report period</h3><p>Jump into the available month/year alert index.</p></div>
-      <div class="filter-controls"><label>Month<select id="alert-month"><option value="">All months</option></select></label><label>Year<select id="alert-year"><option value="">All years</option></select></label><button id="alert-filter-btn" class="btn btn-primary" type="button">View reports</button><button id="alert-filter-clear" class="btn btn-outline" type="button">Reset</button></div>
-      <div id="alert-filter-status" class="filter-status"></div>
-    </div>
-  </div>
-</section>
-
-<section class="stats-band" id="stats">
-  <div class="shell stats-grid" id="stats-grid">
-    <div class="stat-item"><span class="stat-kicker">ALERT INDEX</span><strong id="stat-total">—</strong><span>drug-quality records</span></div>
-    <div class="stat-item"><span class="stat-kicker">NSQ SIGNALS</span><strong id="stat-nsq">—</strong><span>not-of-standard-quality</span></div>
-    <div class="stat-item"><span class="stat-kicker">MANUFACTURERS</span><strong id="stat-manufacturers">—</strong><span>represented in dataset</span></div>
-    <div class="stat-item"><span class="stat-kicker">UPDATED</span><strong id="stat-updated">—</strong><span>dataset coverage</span></div>
-  </div>
-</section>
-
-<section class="section-pad dark-section" id="analytics">
-  <div class="shell">
-    <div class="section-head"><span class="eyebrow">02 · INTELLIGENCE</span><h2>See the signal behind the records.</h2><p>Turn the alert archive into patterns you can explore—not just numbers on a page.</p></div>
-    <div class="insight-grid">
-      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>ALERT ACTIVITY</span><h3>Yearly distribution</h3></div><span class="panel-tag">REAL DATA</span></div><div class="chart-wrap"><canvas id="chart-years"></canvas></div></article>
-      <article class="chart-panel"><div class="panel-top"><div><span>CLASSIFICATION</span><h3>Alert mix</h3></div></div><div class="chart-wrap"><canvas id="chart-category-split"></canvas></div></article>
-      <article class="chart-panel"><div class="panel-top"><div><span>MANUFACTURER LANDSCAPE</span><h3>Most represented</h3></div></div><div class="chart-wrap"><canvas id="chart-manufacturers"></canvas></div></article>
-      <article class="chart-panel chart-wide"><div class="panel-top"><div><span>QUALITY SIGNAL</span><h3>Common failure reasons</h3></div></div><div class="chart-wrap tall"><canvas id="chart-reasons"></canvas></div></article>
-    </div>
-    <div class="historical-card" id="historical-database"><div><span class="eyebrow">ARCHIVE</span><h3>Historical database</h3><p>Coverage and alert counts calculated from the loaded dataset.</p></div><div class="archive-metrics"><span><b id="hist-years">—</b> years</span><span><b id="hist-total">—</b> total</span><span><b id="hist-nsq">—</b> NSQ</span><span><b id="hist-alerted">—</b> alerted</span></div><small id="hist-coverage-note"></small></div>
-  </div>
-</section>
-
-<section class="section-pad" id="recent">
-  <div class="shell">
-    <div class="section-head split"><div><span class="eyebrow">03 · ALERT EXPLORER</span><h2>Recent signals, source-first.</h2><p>Browse recent quality-alert records and open the underlying details.</p></div><a href="#check" class="text-link">Run a check →</a></div>
-    <div id="recent-grid" class="recent-grid"></div>
-  </div>
-</section>
-
-<section class="section-pad process-section" id="how-it-works">
-  <div class="shell">
-    <div class="section-head"><span class="eyebrow">04 · THE METHOD</span><h2>From a medicine name to evidence.</h2></div>
-    <div class="process-grid">
-      <article><b>01</b><span class="process-icon">⌕</span><h3>Search</h3><p>Enter a medicine name or exact batch number.</p></article>
-      <article><b>02</b><span class="process-icon">◎</span><h3>Match</h3><p>Pharma Shield checks the loaded regulatory alert index.</p></article>
-      <article><b>03</b><span class="process-icon">◈</span><h3>Understand</h3><p>Read the alert category, test failure and traceability details.</p></article>
-      <article><b>04</b><span class="process-icon">↗</span><h3>Verify</h3><p>Follow the source information and verify against official material.</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section-pad dark-section" id="why">
-  <div class="shell narrative">
-    <div><span class="eyebrow">05 · WHY IT EXISTS</span><h2>Regulatory information should be searchable.</h2></div>
-    <div class="narrative-copy"><p>Drug-quality alerts are useful only when people can find, interpret and trace them. Pharma Shield creates a focused interface around that journey.</p><div class="narrative-lines"><div><b>THE SIGNAL</b><span>Identify a quality-alert record.</span></div><div><b>THE CONTEXT</b><span>Understand why the record matters.</span></div><div><b>THE EVIDENCE</b><span>Trace it back to its source.</span></div></div></div>
-  </div>
-</section>
-
-<section class="section-pad" id="innovation">
-  <div class="shell innovation-layout">
-    <div><span class="eyebrow">06 · PRODUCT THINKING</span><h2>Built around the pharmacist's information journey.</h2><p>Search is the starting point. Source context, history, analytics and regulatory reference are the layers around it.</p></div>
-    <div class="feature-stack"><div><span>01</span><strong>Source-first</strong><small>Original regulatory context stays visible.</small></div><div><span>02</span><strong>Search-first</strong><small>Less scrolling. Faster verification.</small></div><div><span>03</span><strong>Evidence-aware</strong><small>No-alert results never become false safety claims.</small></div></div>
-  </div>
-</section>
-
-<section class="section-pad about-section" id="about">
-  <div class="shell about-card"><div class="about-mark">PS</div><div><span class="eyebrow">ABOUT PHARMA SHIELD 2.0</span><h2>A digital interface for drug-quality awareness.</h2><p>Pharma Shield is an educational and informational project that organizes available regulatory drug-quality alert records and prohibited-drug information into a searchable experience.</p><div class="source-chips"><span>CDSCO-derived alerts</span><span>6,284 alert records</span><span>444 prohibited entries</span><span>Source-linked</span></div></div></div>
-</section>
-
-<section class="section-pad feedback-section" id="feedback">
-  <div class="shell feedback-card"><div><span class="eyebrow">FEEDBACK LOOP</span><h2>Help make the tool clearer.</h2><p>Share interface or project feedback. Do not submit sensitive patient information.</p></div><form id="feedback-form"><label for="fb-email">Email <span>optional</span></label><input id="fb-email" type="email" placeholder="you@example.com"><label for="fb-message">Message</label><textarea id="fb-message" rows="4" placeholder="What should be improved?"></textarea><button class="btn btn-primary" type="submit">Send feedback →</button></form></div>
-</section>
-
-<section class="disclaimer" id="disclaimer"><div class="shell"><strong>Important</strong><p>Pharma Shield is an educational/informational project. It is not CDSCO, does not certify medicines, and a “no matching alert” result does not establish that a medicine is safe, genuine, approved, or of standard quality. Always verify regulatory information through official sources.</p></div></section>
-</main>
-
-<footer><div class="shell footer-shell"><div><a class="brand" href="#home"><span class="brand-mark"><svg viewBox="0 0 48 48"><path d="M24 4 41 10v12c0 10.8-6.8 18.8-17 22C13.8 40.8 7 32.8 7 22V10z"/><path d="M24 14v20M14 24h20"/></svg></span><span><strong>PHARMA<span>SHIELD</span></strong><small>Drug Safety Intelligence</small></span></a></div><div class="footer-links"><a href="#check">Check Drug</a><a href="#analytics">Intelligence</a><a href="prohibited.html">Prohibited Drugs</a><a href="#about">About</a></div><small>Built for pharmaceutical education &amp; innovation.</small></div></footer>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
